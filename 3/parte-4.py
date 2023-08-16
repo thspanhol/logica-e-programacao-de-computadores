@@ -1,0 +1,6 @@
+valor = float(input('informe o valor de custo do produto: '))
+if valor < 10 : venda = valor + ((valor / 10) * 7)
+if valor >= 10 and valor < 30 : venda = valor + ((valor / 10) * 5)
+if valor >= 30 and valor < 50  : venda = valor + ((valor / 10) * 4)
+if valor >= 50 : venda = valor + ((valor / 10) * 3)
+print('Valor de venda : ', venda)

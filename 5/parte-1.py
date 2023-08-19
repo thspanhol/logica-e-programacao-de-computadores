@@ -16,4 +16,3 @@ for cont in range(10):
 #    if cont % 2 == 1:
 #        continue
 #    print(cont)
-

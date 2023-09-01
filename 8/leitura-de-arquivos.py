@@ -22,3 +22,16 @@ while cont <= 3:
     cont = cont + 1
 ref_arquivo.close()
 '''
+
+ref_arquivo = open('teste.txt', 'w') # Seria 'a' no lugar do 'w' para dicionar novas linhas ao final das existentes.
+cont = 1
+while cont <= 4:
+    nome = input('Informe o nome: ')
+    ref_arquivo.write(nome + '\n')
+    cont = cont + 1
+ref_arquivo.close()
+
+arq = open('teste.txt', 'r')
+for linha in arq:
+    print(linha)
+arq.close()

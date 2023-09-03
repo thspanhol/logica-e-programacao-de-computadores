@@ -8,7 +8,7 @@ tempData = []
 umveData = []
 minTempData = []
 
-# Faz a leitura do arquivo e salva as informações nos bancos criados
+# Faz a leitura do arquivo e salva as informações nos bancos criados para cada futura situação
 arq = open('Anexo_Arquivo_Dados_Projeto_Logica_e_programacao_de_computadores.csv', 'r')
 
 for linha in arq:
@@ -54,6 +54,7 @@ arq.close()
 validYears = [str(ano) for ano in range(1961, 2017)]
 
 print('REQUISITO A:')
+
 # Coleta e valida os dados passados pelo usuário
 print('Informe o mês e ano (no formato MM e AAAA) que você deseja iniciar a pesquisa de dados:')
 monthIni = input('Mês: ')
@@ -167,7 +168,9 @@ for day in filterTime(choice, firstDayFilter, lastDayFilter):
     if choice == umveData : print(f'No dia {day["data"]} a umidade relativa foi de {day["um_relativa"]} e a velocidade do vento foi de {day["vel_vento"]}.')
 
 print('=' * 30)
+print('REQUISITO B:')
 
+# Função que recebe os dados de precip como parametro pra calcular o valor mensal, ordena de forma crescente e retorna o primeiro item da lista (menor valor)
 def smallerPrecip(paramData):
     soma_precip_por_mes_ano = {}
 
@@ -191,18 +194,19 @@ def smallerPrecip(paramData):
 
 monthLessRain = smallerPrecip(precipData)
 
-print('REQUISITO B:')
 print(f'Você sabia que o mês menos chuvoso já registrado foi em {monthLessRain["data"]}? A soma de precipitação TOTAL do mês foi {monthLessRain["precip"]}!')
 
 print('=' * 30)
 print('REQUISITO C:')
 
+# Recebe e valida o mês escolhido pelo usuário
 print('Digite um mês do ano no formato MM para descobrir a média da temperatura mínima desse mês pelo período de 2006 até 2016:')
 monthMinTemp = input('Mês: ')
 while not monthMinTemp in ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'] :
     print('O mês deve ser um inteiro entre 01 e 12 no formato MM.')
     monthMinTemp = input('Mês: ')
 
+# Função recebe os dados com a data e temperatura mínima além do mês escolhido pelo usuário como parâmetros, calcula a média da mínima do mês em cada ano partindo de zero e retorna essas informações em uma lista
 def calculateMinimum(dados, paramMes):
     soma_minima_por_mes = defaultdict(float)
     
@@ -232,9 +236,11 @@ def calculateMinimum(dados, paramMes):
 
 calculatedTempMin = calculateMinimum(minTempData, monthMinTemp)
 
+# Printa o mês escolhido em cada ano
 for ano in calculatedTempMin:
     print(f'Em {ano["data"]} a média da temperatura mínima foi {ano["minima"]}')
 
+# Calcula a média mínima dos meses somando os valores e dividindo pelo número de itens na lista
 soma_minimas = 0
 
 for mes in calculatedTempMin:
@@ -249,17 +255,17 @@ print('=' * 30)
 print('REQUISITO D:')
 print('Veja o gráfico com esses dados:')
 
-# Dados para o gráfico
+# Dados para elaboração do gráfico
 minDataList = [mes['data'] for mes in calculatedTempMin]
 minTempList = [float(temp['minima']) for temp in calculatedTempMin]
 
-# Criar o gráfico de barras
+# Cria o gráfico de barras
 plt.bar(minDataList, minTempList, color='blue')
 
-# Adicionar rótulos e título
+# Adiciona rótulos e título
 plt.xlabel('Mês/Ano')
 plt.ylabel('Temperatura mínima')
 plt.title(f'Média da temperatura mínima do mês {monthMinTemp} nos últimos anos')
 
-# Mostrar o gráfico
+# Mostra o gráfico
 plt.show()

@@ -1,8 +1,12 @@
+from collections import defaultdict
+import matplotlib.pyplot as plt
+
 # Define os futuros bancos de dados
 bigData = []
 precipData = []
 tempData = []
 umveData = []
+minTempData = []
 
 # Faz a leitura do arquivo e salva as informações nos bancos criados
 arq = open('Anexo_Arquivo_Dados_Projeto_Logica_e_programacao_de_computadores.csv', 'r')
@@ -35,15 +39,21 @@ for linha in arq:
         'um_relativa': db[6],
         'vel_vento': db[7].replace('\n', ''),
     }
+    onlyMin = {
+        'data': db[0],
+        'minima': db[3],
+    }
     bigData.append(day)
     precipData.append(onlyPrecip)
     tempData.append(onlyTemp)
     umveData.append(onlyUmve)
+    minTempData.append(onlyMin)
 arq.close()
 
 # Cria uma lista com os anos permitidos para pesquisa
 validYears = [str(ano) for ano in range(1961, 2017)]
 
+print('REQUISITO A:')
 # Coleta e valida os dados passados pelo usuário
 print('Informe o mês e ano (no formato MM e AAAA) que você deseja iniciar a pesquisa de dados:')
 monthIni = input('Mês: ')
@@ -145,7 +155,6 @@ def filterTime(data, paramIni, paramFin ):
     return filterData
 
 print('=' * 30)
-
 # Printa uma frase personalizada para cada dia do período pesquisado
 for day in filterTime(choice, firstDayFilter, lastDayFilter):
 
@@ -182,6 +191,75 @@ def smallerPrecip(paramData):
 
 monthLessRain = smallerPrecip(precipData)
 
+print('REQUISITO B:')
 print(f'Você sabia que o mês menos chuvoso já registrado foi em {monthLessRain["data"]}? A soma de precipitação TOTAL do mês foi {monthLessRain["precip"]}!')
 
 print('=' * 30)
+print('REQUISITO C:')
+
+print('Digite um mês do ano no formato MM para descobrir a média da temperatura mínima desse mês pelo período de 2006 até 2016:')
+monthMinTemp = input('Mês: ')
+while not monthMinTemp in ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'] :
+    print('O mês deve ser um inteiro entre 01 e 12 no formato MM.')
+    monthMinTemp = input('Mês: ')
+
+def calculateMinimum(dados, paramMes):
+    soma_minima_por_mes = defaultdict(float)
+    
+    contagem_por_mes = defaultdict(int)
+    
+    for registro in dados:
+        partes_data = registro['data'].split('/')
+        if len(partes_data) == 3:
+            dia, mes, ano = partes_data
+            chave = f'{mes}/{ano}'
+            temperatura_minima = float(registro['minima'])
+            soma_minima_por_mes[chave] += temperatura_minima
+            contagem_por_mes[chave] += 1
+    
+    media_minima_por_mes = {}
+    for chave, soma in soma_minima_por_mes.items():
+        media_minima = soma / contagem_por_mes[chave]
+        media_minima_por_mes[chave] = media_minima
+    
+    minScore = []
+
+    for chave, media in media_minima_por_mes.items():
+        if chave in [f'{paramMes}/2006', f'{paramMes}/2007', f'{paramMes}/2008', f'{paramMes}/2009', f'{paramMes}/2010', f'{paramMes}/2011', f'{paramMes}/2012', f'{paramMes}/2013', f'{paramMes}/2014', f'{paramMes}/2015', f'{paramMes}/2016']:
+            minScore.append({'data': chave, 'minima': "{:.2f}".format(round(media, 2))})
+
+    return minScore
+
+calculatedTempMin = calculateMinimum(minTempData, monthMinTemp)
+
+for ano in calculatedTempMin:
+    print(f'Em {ano["data"]} a média da temperatura mínima foi {ano["minima"]}')
+
+soma_minimas = 0
+
+for mes in calculatedTempMin:
+    valor_minima = float(mes['minima'])
+    soma_minimas += valor_minima
+
+media_minimas = soma_minimas / len(calculatedTempMin)
+
+print(f'E a média das temperaturas mínimas do mês {monthMinTemp} ao longo desses anos é {media_minimas:.2f}!')
+
+print('=' * 30)
+print('REQUISITO D:')
+print('Veja o gráfico com esses dados:')
+
+# Dados para o gráfico
+minDataList = [mes['data'] for mes in calculatedTempMin]
+minTempList = [float(temp['minima']) for temp in calculatedTempMin]
+
+# Criar o gráfico de barras
+plt.bar(minDataList, minTempList, color='blue')
+
+# Adicionar rótulos e título
+plt.xlabel('Mês/Ano')
+plt.ylabel('Temperatura mínima')
+plt.title(f'Média da temperatura mínima do mês {monthMinTemp} nos últimos anos')
+
+# Mostrar o gráfico
+plt.show()

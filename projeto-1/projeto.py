@@ -32,7 +32,7 @@ mesesEscaldantes = [list(d.values())[0] for d in data if list(d.values())[0] > 3
 mesMaisFrio, menorTemperatura = list(dataSortValues[0].items())[0]
 
 # Mês mais quente e sua temperatura
-mesMaisQuente, maiorTemperatura = list(dataSortValues[2].items())[0]
+mesMaisQuente, maiorTemperatura = list(dataSortValues[len(dataSortValues) - 1].items())[0]
 
 print('Obrigado pelas informações!')
 print('RESULTADOS:')
